@@ -1,5 +1,5 @@
 # Pytest with Lambda
-A very simple example of testing lambda function with pytest (no calls to any services, just testing of functions and handler).
+A very simple example for testing lambda function with pytest (no calls to AWS services, just testing of functions and the handler).
 
 # Setup
 ```
