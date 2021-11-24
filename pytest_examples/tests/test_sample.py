@@ -7,7 +7,7 @@ def test_answer():
 
 def test_handler():
     response = {
-        'statusCode': 200,
+        'statusCode': func(199),
         'body': json.dumps('Hello from Lambda!')
     }
     assert lambda_handler("some_event", "some_context") == response
