@@ -14,11 +14,24 @@ application_id = https://graph.microsoft.com
 scope = https://graph.microsoft.com/.default
 ```
 
+Install the required packages:
+```
+python3 -m venv venv
+source ./venv/bin/activate
+pip install -r requirements.txt
+```
 
-
+# Usage
+We will be using the following URL to filter the applications:
 ```
 https://graph.microsoft.com/v1.0/applications?$filter=web/redirectUris/any(s,startswith(s,'https://myapp.com')&$count=true&$select=appId,displayName,web/redirectUris
 ```
+
+```
+python3 script.py
+```
+
+
 
 ## Findings
 - This query could return multiple applications with the same redirectUri.
