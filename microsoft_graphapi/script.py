@@ -1,35 +1,32 @@
-import msal
 import configparser
-import requests
+import argparse
+from azure.identity import ClientSecretCredential
+from msgraph.core import GraphClient
 
 
-
-def get_token(settings):
-    app = msal.ConfidentialClientApplication(
-        azure_settings['client_id'],
-        authority=(f"https://login.microsoftonline.com/{azure_settings['tenant_id']}/"),
-        client_credential=azure_settings['client_secret'],
+def filter_apps_by_web_redirect_uri(app_client, service_url, selected_properties):
+    result = app_client.get(
+        '/applications',
+        params={
+            '$filter': f"web/redirectUris/any(s:startsWith(s, \'{service_url}\'))",
+            '$count': 'true',
+            '$select': ",".join(selected_properties)
+        },
+        headers={
+            'ConsistencyLevel': 'eventual'
+        }
     )
+    return result.json()
 
-    token = None
-    token = app.acquire_token_for_client(scopes=[azure_settings['scope']])
 
-    if "access_token" in token:
-        #`print(token["access_token"])
-        return token["access_token"]
-    else:
-        print(token.get("error"))
-        print(token.get("error_description"))
-        print(token.get("correlation_id"))  # You may need this when reporting a bug
-        raise Exception("Failed to acquire token")
+def pretty_print_apps(apps):
+    for app in apps['value']:
+        print(f"App ID: {app['appId']}")
+        print(f"Display Name: {app['displayName']}")
+        print("")
+
     
 
-def list_applications(access_token, service_url):
-    headers = {'Authorization': 'Bearer ' + access_token, 'ConsistencyLevel': 'eventual'}
-    # url = f"https://graph.microsoft.com/v1.0/applications?$filter=web/redirectUris/any(s,startswith(s,'{service_url}')&$count=true&$select=appId,displayName"
-    url = f"https://graph.microsoft.com/v1.0/applications"
-    response = requests.get(url, headers=headers)
-    print(response.text)
 
 if __name__ == "__main__":
     # Load settings
@@ -37,11 +34,18 @@ if __name__ == "__main__":
     config.read(['config.cfg', 'config.dev.cfg'])
     azure_settings = config['azure']
 
-    token = get_token(azure_settings)
-    list_applications(token, service_url="https://myapp.com")
+    credential = ClientSecretCredential(
+        tenant_id=azure_settings['tenant_id'],
+        client_id=azure_settings['client_id'],
+        client_secret=azure_settings['client_secret'],
+    )
 
+    # argparser for service url
+    parser = argparse.ArgumentParser()
+    parser.add_argument("service_url", help="The service url to filter applications by")
+    args = parser.parse_args()
+    service_url = args.service_url
 
-
-
-    
-
+    app_client = GraphClient(credential=credential,scopes=[azure_settings['scope']])
+    result = filter_apps_by_web_redirect_uri(app_client, service_url, selected_properties=['appId', 'displayName'])
+    pretty_print_apps(result)
