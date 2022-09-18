@@ -38,8 +38,8 @@ Display Name: my-test-app
 ```
 
 ## Findings
-- This query could return multiple applications with the same redirectUri.
-- Some apps use different redirectUris than the service URL, so the query could return no results.
+- This query will return multiple applications if they use the same redirectUris.  
+- Some apps may use redirectUris different than the service URL, so the query will return no results.
 
 ## References
 - [Advanced query capabilities on Azure AD directory objects](https://learn.microsoft.com/en-us/graph/aad-advanced-queries?tabs=http)
