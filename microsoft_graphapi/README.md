@@ -56,3 +56,4 @@ For example, `web/homePageUrl` property of the application can be used to narrow
 - [Advanced query capabilities on Azure AD directory objects](https://learn.microsoft.com/en-us/graph/aad-advanced-queries?tabs=http)
 - https://github.com/microsoftgraph/msgraph-sdk-python-core
 - https://learn.microsoft.com/en-us/graph/tutorials/python?tabs=aad&tutorial-step=3
+- https://docs.microsoft.com/en-us/graph/filter-query-parameter
