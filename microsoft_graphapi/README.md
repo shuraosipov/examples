@@ -40,9 +40,14 @@ Display Name: my-test-app
 ## Findings
 - This query will return multiple applications if they use the same redirectUris.  
 - Some apps may use redirectUris different than the service URL, so the query will return no results.
+- There are multiple places where redirectUri (publicClient/redirectUris, spa/redirectUris, web/redirectUris) can be set in the Azure AD.
 
 ## Summary
-While it is possible to retrieve client_id and scope using Graph API knowing only DNS name of the target app. The results are not always accurate or unique, and we cannot rely solely on this method to retrieve the client_id and scope. So we need to use other methods (or narrow down query further with some app-specific information) to retrieve the client_id and scope.
+While it is possible to retrieve client_id and scope using Graph API knowing only DNS name of the target app. The results are not always accurate or unique, and we cannot rely solely on this method to retrieve the client_id and scope. So we need to use other methods to retrieve the client_id and scope.
+
+For example, `web/homePageUrl` property of the application can be used to narrow down the query (assuming an app has this property configured). This property defines the URL to the application’s home page or the URL where users can sign-in and use this application.
+
+```
 
 
 
